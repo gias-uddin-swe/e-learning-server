@@ -160,12 +160,23 @@ client.connect((err) => {
     res.send(result);
   });
 
-// get my appointment
-  
-  
+  // get my appointment
 
-
-
+  app.get("/myAppointment/:email", async (req, res) => {
+    const email = req.params.email;
+    console.log(email);
+    const filter = { email: email };
+    const userFined = await usersCollection.findOne(filter);
+    if (userFined.role == "student") {
+      const myCourse = await myCoursesCollection.find(filter).toArray();
+      console.log(myCourse);
+      if (myCourse.status == "approved") {
+        res.send(myCourse);
+      } else {
+        res.status(403).send({ message: "Forbidden access" });
+      }
+    }
+  });
 
   app.get("/courses", async (req, res) => {
     console.log("hello");
