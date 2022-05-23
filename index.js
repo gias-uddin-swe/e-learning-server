@@ -170,7 +170,7 @@ client.connect((err) => {
     if (userFined.role == "student") {
       const myCourse = await myCoursesCollection.find(filter).toArray();
       console.log(myCourse);
-      if (myCourse.status == "approved") {
+      if (myCourse[0].status == "approved") {
         res.send(myCourse);
       } else {
         res.status(403).send({ message: "Forbidden access" });
