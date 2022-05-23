@@ -140,7 +140,7 @@ client.connect((err) => {
     res.send(result);
   });
 
-  // all users
+  // all uses
 
   app.get("/teachers", async (req, res) => {
     const result = await usersCollection.find({ role: "teacher" }).toArray();
