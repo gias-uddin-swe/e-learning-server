@@ -150,6 +150,10 @@ client.connect((err) => {
     const result = await usersCollection.find({}).toArray();
     res.send(result);
   });
+  app.get("/courseVideos", async (req, res) => {
+    const result = await videosCollection.find({}).toArray();
+    res.send(result);
+  });
 
   app.get("/bookedCourse", async (req, res) => {
     const result = await myCoursesCollection.find({}).toArray();
