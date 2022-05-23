@@ -159,6 +159,14 @@ client.connect((err) => {
     const result = await myCoursesCollection.find({}).toArray();
     res.send(result);
   });
+
+// get my appointment
+  
+  
+
+
+
+
   app.get("/courses", async (req, res) => {
     console.log("hello");
     const page = parseInt(req.query.page);
