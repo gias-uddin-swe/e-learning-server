@@ -108,17 +108,26 @@ client.connect((err) => {
                     });
                   }
                 } else {
-                  res.send(userData);
+                  res.send({
+                    status: false,
+                    message: "You are not a Admin ",
+                  });
                   console.log("eita admin naaaaaaa");
                 }
 
                 console.log(results[0].role);
               } else {
-                res.send(false);
+                res.send({
+                  status: false,
+                  message: "Your Password incorrect",
+                });
               }
             });
         } else {
-          res.send(false);
+          res.send({
+            status: false,
+            message: " email not found ! please change email",
+          });
         }
       });
   });
