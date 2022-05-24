@@ -53,30 +53,27 @@ client.connect((err) => {
   const videosCollection = client
     .db("eLearningManagement")
     .collection("videos");
+  const reviewCollection = client
+    .db("eLearningManagement")
+    .collection("review");
 
   app.post("/addStudent", async (req, res) => {
-    // const name = req.body.name;
-    // const email = req.body.email;
-    // const phone = req.body.phone;
-    // const role = "user";
-    // const password = req.body.password;
-    // const pic = req.files.image;
-    // const picData = pic.data;
-    // const encodedPic = picData.toString("base64");
-    // const imageBuffer = Buffer.from(encodedPic, "base64");
-    // const info = {
-    //   name,
-    //   email,
-    //   password,
-    //   phone,
-    //   role,
-    //   image: imageBuffer,
-    // };
-    // console.log(info);
-    console.log(req.body);
-    const result = await usersCollection.insertOne(req.body);
-    console.log(result);
-    res.send(result);
+    console.log(req?.body);
+
+    const checkResult = await usersCollection
+      .find({ email: req?.body?.email })
+      .toArray();
+    console.log(checkResult);
+    if (checkResult?.length > 0) {
+      res.send({
+        status: false,
+        message: "this email already used!! Try another one",
+      });
+    } else {
+      const result = await usersCollection.insertOne(req?.body);
+      console.log(result);
+      res.send({ result, role: req?.body?.role });
+    }
   });
 
   app.post("/login", (req, res) => {
@@ -95,8 +92,9 @@ client.connect((err) => {
               if (results?.length > 0) {
                 const userData = {
                   status: true,
-                  userInfo: results[0]?.role,
+                  role: results[0]?.role,
                   userEmail: results[0]?.email,
+                  name: results[0]?.name,
                 };
                 console.log(userData);
                 console.log(results[0].role);
@@ -160,6 +158,21 @@ client.connect((err) => {
     console.log(req.body);
     const result = await videosCollection.insertOne(req.body);
     res.send(result);
+  });
+
+  app.post("/review", async (req, res) => {
+    const email = req.body.email;
+    const user = await usersCollection.findOne({ email: email });
+    const insertDoc = {
+      image: user?.studentImage,
+      email: req.body.email,
+      name: user?.name,
+      review: req.body,
+    };
+    if (user) {
+      const result = await reviewCollection.insertOne(insertDoc);
+      res.send(result);
+    }
   });
 
   // all us
