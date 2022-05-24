@@ -80,8 +80,9 @@ client.connect((err) => {
   });
 
   app.post("/login", (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
+    const email = req?.body?.email;
+    const password = req?.body?.password;
+
     console.log(email, password);
     usersCollection
       .find({ email: req.body.email })
@@ -97,25 +98,9 @@ client.connect((err) => {
                   userInfo: results[0]?.role,
                   userEmail: results[0]?.email,
                 };
-                if (req?.body?.status == "admin") {
-                  if (results[0]?.role == "admin") {
-                    console.log(results[0]);
-                    res.send(userData);
-                  } else {
-                    res.send({
-                      status: false,
-                      message: "you are not admin Please try again ",
-                    });
-                  }
-                } else {
-                  res.send({
-                    status: false,
-                    message: "You are not a Admin ",
-                  });
-                  console.log("eita admin naaaaaaa");
-                }
-
+                console.log(userData);
                 console.log(results[0].role);
+                res.send(userData);
               } else {
                 res.send({
                   status: false,
@@ -130,6 +115,34 @@ client.connect((err) => {
           });
         }
       });
+  });
+
+  app.post("/adminLogin", async (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    const status = req.body.status;
+
+    const result = await usersCollection
+      .find({
+        email: email,
+      })
+      .toArray();
+    console.log(result);
+    if (result.length > 0) {
+      if (result[0].password == password) {
+        if (result[0].role == "admin") {
+          res.send({ status: true, role: "admin", email: email });
+        } else {
+          console.log("roll not admin");
+          res.send({ status: false, message: "your roll is not as admin" });
+        }
+      } else {
+        console.log("password not ok");
+        res.send({ status: false, message: "password not correct!!" });
+      }
+    } else {
+      res.send({ status: false, message: "email not found !!" });
+    }
   });
 
   app.post("/addCourse", async (req, res) => {
@@ -264,6 +277,20 @@ client.connect((err) => {
     const result = await usersCollection.updateOne(filter, updateDoc);
     res.send(result);
   });
+  app.put("/makeAdmin/:id", async (req, res) => {
+    const id = req.params.id;
+    console.log(id);
+    const data = req.body.data;
+    const filter = {
+      _id: ObjectId(req?.params?.id),
+    };
+    const updateDoc = {
+      $set: { role: "admin" },
+    };
+    const result = await usersCollection.updateOne(filter, updateDoc);
+    res.send(result);
+  });
+
   app.put("/courseStatus/:id", async (req, res) => {
     const id = req?.params?.id;
 
