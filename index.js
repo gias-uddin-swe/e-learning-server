@@ -195,6 +195,13 @@ client.connect((err) => {
     res.send(result);
   });
 
+  app.get("/reviews", async (req, res) => {
+    const result = await reviewCollection.find({}).toArray();
+    res.send(result);
+  });
+
+
+
   // get my appointment
 
   app.get("/myAppointment/:email", async (req, res) => {
