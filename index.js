@@ -18,7 +18,7 @@ require("dotenv").config();
 // const uri =
 //   "mongodb+srv://dbuser1:gias1234@cluster0.9xmah.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 
-const uri = `mongodb+srv://onlineDoctors:J8tkqlZUV77r6eKS@cluster0.jqsch.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jqsch.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
