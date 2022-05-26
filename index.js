@@ -1,12 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const { ObjectID } = require("mongodb");
 require("dotenv").config();
 const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
 const fileUpload = require("express-fileupload");
-const req = require("express/lib/request");
+// const req = require("express/lib/request");
 require("dotenv").config();
 
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jqsch.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
@@ -199,8 +198,6 @@ client.connect((err) => {
     const result = await reviewCollection.find({}).toArray();
     res.send(result);
   });
-
-
 
   // get my appointment
 
