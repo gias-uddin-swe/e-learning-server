@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(fileUpload());
 
-app.get("/", (req, res) => {
+app.get("/app", (req, res) => {
   res.send("Hello World!");
 });
 
