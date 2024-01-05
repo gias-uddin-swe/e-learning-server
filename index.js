@@ -17,13 +17,6 @@ require("dotenv").config();
 
 // const uri =
 //   "mongodb+srv://dbuser1:gias1234@cluster0.9xmah.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jqsch.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
 const port = process.env.PORT || 5000;
 const app = express();
 app.use(cors());
@@ -31,32 +24,46 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(fileUpload());
 
+// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jqsch.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+
+// const client = new MongoClient(uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   },
+// });
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-client.connect((err) => {
+var uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0-shard-00-00.jqsch.mongodb.net:27017,cluster0-shard-00-01.jqsch.mongodb.net:27017,cluster0-shard-00-02.jqsch.mongodb.net:27017/?ssl=true&replicaSet=atlas-5k5427-shard-0&authSource=admin&retryWrites=true&w=majority`;
+MongoClient.connect(uri, async function (err, client) {
+  const collection = client.db("test").collection("devices");
+  console.log("database connected");
   const studentsCollection = client
     .db("eLearningManagement")
     .collection("students");
-  const usersCollection = client.db("eLearningManagement").collection("users");
-  const categoryCollection = client
+  const usersCollection = await client
+    .db("eLearningManagement")
+    .collection("users");
+  const categoryCollection = await client
     .db("eLearningManagement")
     .collection("category");
-  const courseCollection = client
+  const courseCollection = await client
     .db("eLearningManagement")
     .collection("course");
-  const myCoursesCollection = client
+  const myCoursesCollection = await client
     .db("eLearningManagement")
     .collection("myCourses");
-  const videosCollection = client
+  const videosCollection = await client
     .db("eLearningManagement")
     .collection("videos");
-  const reviewCollection = client
+  const reviewCollection = await client
     .db("eLearningManagement")
     .collection("review");
 
-  // /sdkjfds
   app.post("/addStudent", async (req, res) => {
     console.log(req?.body);
 
@@ -358,8 +365,55 @@ client.connect((err) => {
     });
     res.send(result);
   });
+
+  // perform actions on the collection object
+  // client.close();
 });
 
+// client.connect(async (err) => {
+//   // /sdkjfds
+
+//   console.log("database connected");
+//   const studentsCollection = client
+//     .db("eLearningManagement")
+//     .collection("students");
+//   const usersCollection = await client
+//     .db("eLearningManagement")
+//     .collection("users");
+//   const categoryCollection = await client
+//     .db("eLearningManagement")
+//     .collection("category");
+//   const courseCollection = await client
+//     .db("eLearningManagement")
+//     .collection("course");
+//   const myCoursesCollection = await client
+//     .db("eLearningManagement")
+//     .collection("myCourses");
+//   const videosCollection = await client
+//     .db("eLearningManagement")
+//     .collection("videos");
+//   const reviewCollection = await client
+//     .db("eLearningManagement")
+//     .collection("review");
+
+// });
+
+// async function run() {
+//   try {
+//     await client.connect();
+
+//     await client.db("admin").command({ ping: 1 });
+//     console.log(
+//       "Pinged your deployment. You successfully connected to MongoDB!"
+//     );
+//   } finally {
+//   }
+// }
+// run().catch(console.dir);
+
+app.get("/", (req, res) => {
+  res.send("SIMPLE CRUD IS RUNNING");
+});
 app.listen(port, () => {
   console.log(`E-learning App listening on port ${port}`);
 });
